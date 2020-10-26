@@ -8,7 +8,7 @@ import "../../interfaces/IDexHandler.sol";
 import "../../interfaces/IGovernanceSwap.sol";
 
 /*
- * SafeSmartSwap 
+ * SafeSmartSwapAbstract
  */
 abstract
 contract SafeSmartSwap {
