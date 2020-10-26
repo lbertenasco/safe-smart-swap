@@ -6,13 +6,12 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "../../interfaces/IDexHandler.sol";
 import "../../interfaces/IGovernanceSwap.sol";
-import "../../interfaces/ISafeSmartSwap.sol";
 
 /*
  * SafeSmartSwap 
  */
 abstract
-contract SafeSmartSwap is ISafeSmartSwap {
+contract SafeSmartSwap {
     using SafeMath for uint256;
 
     IGovernanceSwap public governanceSwap;
