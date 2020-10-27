@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "npx hardhat test",
+    "test:ganache": "npx hardhat test --network ganache",
     "compile": "npx hardhat compile"
   }
 }

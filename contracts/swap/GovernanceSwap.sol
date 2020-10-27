@@ -64,6 +64,7 @@ contract GovernanceSwap is IGovernanceSwap {
 
         - getPairDefaultDex(_in, _out) returns (address _dex)
         - getPairDefaultDexHandler(_in, _out) returns (address _handler)
+        - getDexHandler(_dex) returns (address _handler)
         - getPairDefaultData(_in, _out) returns (bytes memory _data)
             
         -     

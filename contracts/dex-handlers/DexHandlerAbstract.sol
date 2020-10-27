@@ -25,5 +25,9 @@ contract DexHandler is IDexHandler {
     function isDexHandler() external override view returns (bool) {
         return true;
     }
-        
+    
+    function swap(bytes memory _data, uint256 _amount) public virtual override returns (uint256 _amountOut) {}
+    function getAmountOut(bytes memory _data, uint256 _amount) public virtual override view returns (uint256 _amountOut) {}
+    function swapData() external virtual override pure returns (bytes memory) {}
+
 }

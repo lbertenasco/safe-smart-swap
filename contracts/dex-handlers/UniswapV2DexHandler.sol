@@ -26,7 +26,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     }
 
     function swap(bytes memory _data, uint256 _amount) public override returns (uint256 _amountOut) {
-        (, uint256 _min, address[] memory _path,, uint256 _expire) = decodeData(_data);
+        (, uint256 _min, address[] memory _path,,) = decodeData(_data);
         // TODO Overkill: re-encode with modified data, submit _swap on abstract with data then use decode to get values out.
 
         uint[] memory _amounts = uniswapV2Router.swapExactTokensForTokens(
@@ -34,7 +34,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
             _min,
             _path,
             msg.sender,
-            _expire
+            now.add(1 hours)
         );
 
         // Custom UniswapV2 result parsing to get _amountOut of swap
@@ -55,9 +55,9 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     }
 
     function swapData() external override pure returns (bytes memory) {
-        require(false, 'use swapData(uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire)');
+        require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire)');
     }
-    function swapData(
+    function customSwapData(
         uint256 _amount,
         uint256 _min,
         address[] memory _path,

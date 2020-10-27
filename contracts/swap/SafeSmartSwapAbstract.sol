@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.6.8;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 import "../../interfaces/IDexHandler.sol";
 import "../../interfaces/IGovernanceSwap.sol";
@@ -13,6 +14,7 @@ import "../../interfaces/IGovernanceSwap.sol";
 abstract
 contract SafeSmartSwap {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     IGovernanceSwap public governanceSwap;
 
@@ -25,12 +27,19 @@ contract SafeSmartSwap {
 
         address _handler = governanceSwap.getPairDefaultDexHandler(_in, _out);
         bytes memory _data = governanceSwap.getPairDefaultData(_in, _out);
+
+        _approve(_in, _handler, _amount);
         return IDexHandler(_handler).swap(_data, _amount);
 
     }
 
     // Custom path swap
     function _swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint _amountOut) {
+        // Use default swap if no custom dex and data was used
+        if (_dex == address(0) && _data.length == 0) {
+            return _swap(_amount, _in, _out);
+        }
+
         uint256 inBalancePreSwap = IERC20(_in).balanceOf(address(this));
         uint256 outBalancePreSwap = IERC20(_out).balanceOf(address(this));
 
@@ -41,6 +50,9 @@ contract SafeSmartSwap {
 
         address _handler = governanceSwap.getDexHandler(_dex);
         require(_handler != address(0), 'no-handler-for-dex');
+        
+        _approve(_in, _handler, _amount);
+
         _amountOut = IDexHandler(_handler).swap(_data, _amount);
 
         require(
@@ -55,6 +67,10 @@ contract SafeSmartSwap {
         // Extra checks to avoid custom path exploits
         require(inBalancePostSwap >= inBalancePreSwap.sub(_amount), 'in-balance-mismatch');
         require(outBalancePostSwap >= outBalancePreSwap.add(_governanceAmountOut), 'out-balance-mismatch');
+    }
+
+    function _approve(address _in, address _handler, uint256 _amount) internal {
+        IERC20(_in).safeApprove(_handler, _amount);
     }
 
 }
