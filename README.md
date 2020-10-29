@@ -25,16 +25,16 @@ This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can
 Abstract contract that should be used to extend from when creating DexHandlers. (see [`UniswapV2DexHandler.sol`](./contracts/dex-handlers/UniswapV2DexHandler.sol))
 
 ```sol
-    address public dex;
-    constructor(address _dex) public {
-        require(_dex.isContract(), 'dex-handler::constructor:dex-is-not-a-contract');
-        dex = _dex;
-    }
-    function isDexHandler() external override view returns (bool) { return true; }
-    function swap(bytes memory _data, uint256 _amount) public virtual override returns (uint256 _amountOut) {}
-    function getAmountOut(bytes memory _data, uint256 _amount) public virtual override view returns (uint256 _amountOut) {}
-    function swapData() external virtual override pure returns (bytes memory) {}
-    function decodeData(bytes memory _data) public virtual pure;
+address public dex;
+constructor(address _dex) public {
+    require(_dex.isContract(), 'dex-handler::constructor:dex-is-not-a-contract');
+    dex = _dex;
+}
+function isDexHandler() external override view returns (bool) { return true; }
+function swap(bytes memory _data, uint256 _amount) public virtual override returns (uint256 _amountOut) {}
+function getAmountOut(bytes memory _data, uint256 _amount) public virtual override view returns (uint256 _amountOut) {}
+function swapData() external virtual override pure returns (bytes memory) {}
+function decodeData(bytes memory _data) public virtual pure;
 ```
 
 
