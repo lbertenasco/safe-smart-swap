@@ -22,7 +22,7 @@ contract SafeSmartSwap {
         governanceSwap = IGovernanceSwap(_governanceSwap);
     }
 
-    // Governance path swap
+    // Governance swap
     function _swap(uint256 _amount, address _in, address _out) internal returns (uint _amountOut) {
 
         address _handler = governanceSwap.getPairDefaultDexHandler(_in, _out);
@@ -33,7 +33,7 @@ contract SafeSmartSwap {
 
     }
 
-    // Custom path swap
+    // Custom swap
     function _swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint _amountOut) {
         // Use default swap if no custom dex and data was used
         if (_dex == address(0) && _data.length == 0) {
@@ -55,16 +55,13 @@ contract SafeSmartSwap {
 
         _amountOut = IDexHandler(_handler).swap(_data, _amount);
 
-        require(
-            _amountOut >= _governanceAmountOut,
-            'custom-path-is-suboptimal'
-        );
-        // TODO Check gas spendage if _amountOut == _governanceAmountOut to avoid gas mining? (overkill)
+        require(_amountOut >= _governanceAmountOut, 'custom-swap-is-suboptimal');
+        // TODO Check gas spendage if _amountOut == _governanceAmountOut to avoid gas mining? (overkill) [need this check for keep3r ]
 
         uint256 inBalancePostSwap = IERC20(_in).balanceOf(address(this));
         uint256 outBalancePostSwap = IERC20(_out).balanceOf(address(this));
 
-        // Extra checks to avoid custom path exploits
+        // Extra checks to avoid custom dex+data exploits
         require(inBalancePostSwap >= inBalancePreSwap.sub(_amount), 'in-balance-mismatch');
         require(outBalancePostSwap >= outBalancePreSwap.add(_governanceAmountOut), 'out-balance-mismatch');
     }

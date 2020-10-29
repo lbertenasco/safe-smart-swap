@@ -89,12 +89,4 @@ contract MockStrategy is SafeSmartSwap, StrategyCurveYVoterProxy {
         }
     }
 
-
-    function swap(uint256 _amount, address _in, address _out) internal returns (uint _amountOut) {
-
-    }
-
-    function swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint _amountOut) {
-        
-    }
 }

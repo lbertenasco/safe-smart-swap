@@ -1,0 +1,32 @@
+{
+    "accounts": {
+        "mainnet": {
+            "publicKey": "",
+            "privateKey": ""
+        }
+    },
+    "contracts": {
+        "mainnet": {
+            "controller": {
+                "address": "0x9E65Ad11b299CA0Abefc2799dDB6314Ef2d91080"
+            },
+            "uniswapV2Router": {
+                "address": "0x7a250d5630b4cf539739df2c5dacb4c659f2488d"
+            }
+        }
+    },
+    "infura": {
+        "_name": "",
+        "apiKey": ""
+    },
+    "alchemy": {
+        "mainnet": {
+            "_name": "",
+            "apiKey": ""
+        },
+        "ropsten": {
+            "_name": "",
+            "apiKey": ""
+        }
+    }
+}
