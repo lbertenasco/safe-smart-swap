@@ -43,8 +43,6 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
             now.add(1 hours)
         );
 
-        // Custom UniswapV2 result parsing to get _amountOut of swap
-        // (uint256[] memory amounts) = abi.decode(_result, (uint256[])); // Not neccesarry
         return _amounts[_amounts.length - 1];
     }
 
@@ -60,7 +58,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
         _data; // silence warning
         require(false, 'use customDecodeData(bytes memory _data) returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire)');
     }
-    function customDecodeData(bytes memory _data) public override pure returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) {
+    function customDecodeData(bytes memory _data) public pure returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) {
         return abi.decode(_data, (uint256, uint256, address[], address, uint256));
     }
 

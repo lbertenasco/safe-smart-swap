@@ -98,9 +98,9 @@ describe('MockStrategy', function() {
       owner.address, // _to
       0// _expire
     );
-    // Should revert with 'custom-path-is-suboptimal'
+    // Should revert with 'custom-swap-is-suboptimal'
     await expect(mockStrategy.customHarvest(uniswapV2Address, suboptimalSwapDataCrvDai))
-      .to.be.revertedWith('custom-path-is-suboptimal');
+      .to.be.revertedWith('custom-swap-is-suboptimal');
     
     // Should succeed by sending the same path governance uses 
     await mockStrategy.customHarvest(uniswapV2Address, customSwapDataCrvDai);
