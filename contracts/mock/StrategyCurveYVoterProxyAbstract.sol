@@ -227,7 +227,7 @@ contract StrategyCurveYVoterProxy {
         VoterProxy(proxy).withdrawAll(gauge, want);
     }
 
-    function harvest() public {
+    function harvest() public virtual {
         require(msg.sender == strategist || msg.sender == governance, "!authorized");
         VoterProxy(proxy).harvest(gauge);
         uint256 _crv = IERC20(crv).balanceOf(address(this));

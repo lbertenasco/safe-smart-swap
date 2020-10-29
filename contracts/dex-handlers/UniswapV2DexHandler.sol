@@ -17,7 +17,6 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
 
     constructor(address _uniswapV2Router) DexHandler(_uniswapV2Router) public {
         uniswapV2Router = IUniswapV2Router(_uniswapV2Router);
-        // TODO UniswapV2 specific contract checks
     }
 
 
@@ -26,8 +25,15 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     }
 
     function swap(bytes memory _data, uint256 _amount) public override returns (uint256 _amountOut) {
-        (, uint256 _min, address[] memory _path,,) = decodeData(_data);
-        // TODO Overkill: re-encode with modified data, submit _swap on abstract with data then use decode to get values out.
+        return customSwap(_data, _amount);
+    }
+
+    function customSwap(bytes memory _data, uint256 _amount) public returns (uint256 _amountOut) {
+        (, uint256 _min, address[] memory _path,,) = customDecodeData(_data);
+        // Transfer _in tokens to self
+        require(IERC20(_path[0]).transferFrom(msg.sender, address(this), _amount), 'uniswapv2-dex-handler::custom-swap:transfer-from-failed');
+
+        IERC20(_path[0]).approve(address(uniswapV2Router), _amount);
 
         uint[] memory _amounts = uniswapV2Router.swapExactTokensForTokens(
             _amount,
@@ -43,19 +49,23 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     }
 
     function getAmountOut(bytes memory _data, uint256 _amount) public override view returns (uint256 _amountOut) {
-        (,, address[] memory _path,,) = decodeData(_data);
+        (,, address[] memory _path,,) = customDecodeData(_data);
 
         uint256[] memory _amounts = uniswapV2Router.getAmountsOut(_amount, _path);
 
         return _amounts[_amounts.length - 1];
     }
  
-    function decodeData(bytes memory _data) internal pure returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) {
+    function decodeData(bytes memory _data) public override pure {
+        _data; // silence warning
+        require(false, 'use customDecodeData(bytes memory _data) returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire)');
+    }
+    function customDecodeData(bytes memory _data) public override pure returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) {
         return abi.decode(_data, (uint256, uint256, address[], address, uint256));
     }
 
     function swapData() external override pure returns (bytes memory) {
-        require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire)');
+        require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) returns (bytes memory)');
     }
     function customSwapData(
         uint256 _amount,
@@ -64,8 +74,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
         address _to,
         uint256 _expire
     ) public pure returns (bytes memory) {
-        return abi.encodeWithSignature(
-            "swapExactTokensForTokens(uint,uint,address[],address,uint)",
+        return abi.encode(
             _amount,
             _min,
             _path,

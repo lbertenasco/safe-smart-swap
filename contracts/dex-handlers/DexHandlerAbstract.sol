@@ -29,5 +29,7 @@ contract DexHandler is IDexHandler {
     function swap(bytes memory _data, uint256 _amount) public virtual override returns (uint256 _amountOut) {}
     function getAmountOut(bytes memory _data, uint256 _amount) public virtual override view returns (uint256 _amountOut) {}
     function swapData() external virtual override pure returns (bytes memory) {}
+    function decodeData(bytes memory _data) public virtual pure;
+    function customDecodeData(bytes memory _data) public virtual pure returns (uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire);
 
 }
