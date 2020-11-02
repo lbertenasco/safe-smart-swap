@@ -6,11 +6,15 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "../../interfaces/IGovernanceSwap.sol";
 import "../../interfaces/IDexHandler.sol";
+
+import '../utils/Governable.sol';
+import '../utils/CollectableDust.sol';
+
 /*
  * GovernanceSwap 
  */
 
-contract GovernanceSwap is IGovernanceSwap {
+contract GovernanceSwap is Governable, CollectableDust, IGovernanceSwap {
     using SafeMath for uint256;
 
     // Dex handlers mapping
@@ -20,7 +24,7 @@ contract GovernanceSwap is IGovernanceSwap {
     mapping(address => mapping(address => address)) internal defaultPairDex;
     mapping(address => mapping(address => bytes)) internal defaultPairData;
 
-    constructor() public {
+    constructor() public Governable(msg.sender) CollectableDust() {
     }
 
     
@@ -30,26 +34,25 @@ contract GovernanceSwap is IGovernanceSwap {
 
         - addDexHandler(_dex, _handler)
         - removeDexHandler(_dex, _handler)
-
         - setPairDefaults(_in, _out, _dex, _data)
 
      */
 
 
-    function addDexHandler(address _dex, address _handler) external override /*onlyGovernance*/ returns (bool) {
+    function addDexHandler(address _dex, address _handler) external override onlyGovernor returns (bool) {
         require(dexHandlers[_dex] == address(0), 'governance-swap::add-dex:dex-already-exists');
         require(IDexHandler(_handler).isDexHandler(), 'governance-swap::add-dex:contract-is-not-handler');
         dexHandlers[_dex] = _handler;
         return true;
     }
 
-    function removeDexHandler(address _dex) external override /*onlyGovernance*/ returns (bool) {
+    function removeDexHandler(address _dex) external override onlyGovernor returns (bool) {
         require(dexHandlers[_dex] != address(0), 'governance-swap::add-dex:dex-does-not-exists');
         dexHandlers[_dex] = address(0);
         return true;
     }
 
-    function setPairDefaults(address _in, address _out, address _dex, bytes memory _data) public override /*onlyGovernance*/ returns (bool) {
+    function setPairDefaults(address _in, address _out, address _dex, bytes memory _data) public override onlyGovernor returns (bool) {
         require(dexHandlers[_dex] != address(0), 'governance-swap::set-pair-defaults:dex-does-not-have-handler');
         require(_in != _out, 'governance-swap::set-pair-defaults:in-equals-out');
         defaultPairDex[_in][_out] = _dex;
@@ -81,6 +84,25 @@ contract GovernanceSwap is IGovernanceSwap {
     }
     function getPairDefaultData(address _in, address _out) external override returns (bytes memory _data) {
         return defaultPairData[_in][_out];
+    }
+
+
+    // Governable
+    function setPendingGovernor(address _pendingGovernor) external override onlyGovernor {
+        _setPendingGovernor(_pendingGovernor);
+    }
+
+    function acceptGovernor() external override onlyPendingGovernor {
+        _acceptGovernor();
+    }
+
+    // Collectable Dust
+    function sendDust(
+        address _to,
+        address _token,
+        uint256 _amount
+    ) external override onlyGovernor {
+        _sendDust(_to, _token, _amount);
     }
     
 }

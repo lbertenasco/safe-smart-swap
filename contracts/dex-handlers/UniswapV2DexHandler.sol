@@ -43,7 +43,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
             now.add(1 hours)
         );
 
-        return _amounts[_amounts.length - 1];
+        return _amounts[_amounts.length.sub(1)];
     }
 
     function getAmountOut(bytes memory _data, uint256 _amount) public override view returns (uint256 _amountOut) {
@@ -51,7 +51,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
 
         uint256[] memory _amounts = uniswapV2Router.getAmountsOut(_amount, _path);
 
-        return _amounts[_amounts.length - 1];
+        return _amounts[_amounts.length.sub(1)];
     }
  
     function decodeData(bytes memory _data) public override pure {
