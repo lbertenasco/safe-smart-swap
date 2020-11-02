@@ -1,8 +1,9 @@
 {
     "accounts": {
         "mainnet": {
-            "publicKey": "",
-            "privateKey": ""
+            "publicKey": "0xfeb4acf3df3cdea7399794d0869ef76a6efaff52",
+            "privateKey": "",
+            "crvWhale": "0x0e33be39b13c576ff48e14392fbf96b02f40cd34"
         }
     },
     "contracts": {

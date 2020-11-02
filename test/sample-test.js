@@ -27,7 +27,6 @@ describe('MockStrategy', function() {
     });
     const crvWhale = owner.provider.getUncheckedSigner(config.accounts.mainnet.crvWhale);
 
-
     const GovernanceSwap = await ethers.getContractFactory('GovernanceSwap');
     const governanceSwap = await GovernanceSwap.deploy();
     
