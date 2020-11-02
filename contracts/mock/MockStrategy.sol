@@ -23,25 +23,25 @@ contract MockStrategy is SafeSmartSwap, StrategyCurveYVoterProxy {
     function customHarvest(address _dex, bytes memory _data) public returns (uint256 _amountOut) {
         require(msg.sender == strategist || msg.sender == governance, "!authorized");
         // VoterProxy(proxy).harvest(gauge); // Deposit crv directly into strat
-        uint256 _crv = IERC20(crv).balanceOf(address(this));
-        if (_crv > 0) {
-            // uint256 _keepCRV = _crv.mul(keepCRV).div(keepCRVMax);
+        uint256 _amount = IERC20(crv).balanceOf(address(this));
+        if (_amount > 0) {
+            // uint256 _keepCRV = _amount.mul(keepCRV).div(keepCRVMax);
             // IERC20(crv).safeTransfer(voter, _keepCRV);
-            // _crv = _crv.sub(_keepCRV);
+            // _amount = _amount.sub(_keepCRV);
 
-            // Using SafeSmartSwap to move _crv (crv) to x (dai) via custom dex-data
-            _swap(_crv, crv, dai, _dex, _data);
+            // Using SafeSmartSwap to move _amount (crv) to x (dai) via custom dex-data
+            _swap(_amount, crv, dai, _dex, _data);
             // Replaces this code below:
 
             // IERC20(crv).safeApprove(uni, 0);
-            // IERC20(crv).safeApprove(uni, _crv);
+            // IERC20(crv).safeApprove(uni, _amount);
 
             // address[] memory path = new address[](3);
             // path[0] = crv;
             // path[1] = weth;
             // path[2] = dai;
 
-            // Uni(uni).swapExactTokensForTokens(_crv, uint256(0), path, address(this), now.add(1800));
+            // Uni(uni).swapExactTokensForTokens(_amount, uint256(0), path, address(this), now.add(1800));
         }
         uint256 _dai = IERC20(dai).balanceOf(address(this));
         return _dai;

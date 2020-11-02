@@ -13,7 +13,6 @@
   "scripts": {
     "test": "npx hardhat test",
     "test:gas": "REPORT_GAS=true npx hardhat test",
-    "test:ganache": "npx hardhat test --network ganache",
     "compile": "npx hardhat compile"
   }
 }

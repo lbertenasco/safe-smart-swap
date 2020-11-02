@@ -13,7 +13,7 @@ module.exports = {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${config.alchemy.mainnet.apiKey}`,
       }
-    },
+    }
   },
   solidity: {
     compilers: [
@@ -32,7 +32,7 @@ module.exports = {
     ]
   },
   mocha: {
-    timeout: 2*60*1000 // 2 minutes
+    timeout: 5*60*1000 // 5 minutes
   },
   gasReporter: {
     enabled: (process.env.REPORT_GAS) ? true : false,

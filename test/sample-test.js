@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const config = require('../.config.json');
 
-const base18DecimalUnit = ethers.BigNumber.from(1).pow(10, 18);
+const e18 = ethers.BigNumber.from(10).pow(18);
 
 describe('MockStrategy', function() {
   let owner;
@@ -21,6 +21,13 @@ describe('MockStrategy', function() {
   });
 
   it.only('Should deploy on mainnet fork', async function() {
+    await hre.network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: [config.accounts.mainnet.crvWhale]
+    });
+    const crvWhale = owner.provider.getUncheckedSigner(config.accounts.mainnet.crvWhale);
+
+
     const GovernanceSwap = await ethers.getContractFactory('GovernanceSwap');
     const governanceSwap = await GovernanceSwap.deploy();
     
@@ -43,7 +50,6 @@ describe('MockStrategy', function() {
     const wethAddress = await mockStrategy.callStatic.weth();
     const crvContract = await ethers.getContractAt('ERC20Token', crvAddress, owner);
     const daiContract = await ethers.getContractAt('ERC20Token', daiAddress, owner);
-    const wethContract = await ethers.getContractAt('ERC20Token', wethAddress, owner);
 
     const customSwapDataCrvDai = await uniswapV2DexHandler.callStatic.customSwapData(
       0, // _amount
@@ -53,42 +59,16 @@ describe('MockStrategy', function() {
       0// _expire
     );
     await governanceSwap.setPairDefaults(crvAddress, daiAddress, uniswapV2Address, customSwapDataCrvDai);
-
-
-    // Add WETH -> CRV path and data for uniswapv2
-    const customSwapDataWethCrv = await uniswapV2DexHandler.callStatic.customSwapData(
-      0, // _amount
-      0, // _min
-      [wethAddress, crvAddress], // _path
-      owner.address, // _to
-      0// _expire
-    );
-    await governanceSwap.setPairDefaults(wethAddress, crvAddress, uniswapV2Address, customSwapDataWethCrv);
-
-    // Use governanceSwap to optimally swap tokens
-    const handlerAddress = await governanceSwap.callStatic.getPairDefaultDexHandler(wethAddress, crvAddress);
-    console.log(handlerAddress)
-    const swapDataWethCrv = await governanceSwap.callStatic.getPairDefaultData(wethAddress, crvAddress);
-    const dexHandler = await ethers.getContractAt('UniswapV2DexHandler', handlerAddress, owner);
-    const amount = base18DecimalUnit.mul(10);
-
-    // Get WETH and approve
-    await owner.sendTransaction({ to: wethAddress, value: amount })
-    await wethContract.approve(dexHandler.address, amount);
     
-    // Validate decoded data
-    const decodedSwapDataWethCrv = await dexHandler.customDecodeData(swapDataWethCrv);
-    expect(decodedSwapDataWethCrv._path).to.deep.eq([wethAddress, crvAddress]);
-
-    // Swap WETH to CRV
-    await dexHandler.customSwap(swapDataWethCrv, amount);    
-    const crvBalance = await crvContract.callStatic.balanceOf(owner.address);
-        
+    const handlerAddress = await governanceSwap.callStatic.getPairDefaultDexHandler(crvAddress, daiAddress);
+    const dexHandler = await ethers.getContractAt('UniswapV2DexHandler', handlerAddress, owner);
+    
     // Send CRV to strategy
-    await crvContract.transfer(mockStrategy.address, crvBalance)
-
+    const crvAmount = e18.mul(10000);
+    await crvContract.connect(crvWhale).transfer(mockStrategy.address, crvAmount)
+    
     const strategyCrvBalance = await crvContract.callStatic.balanceOf(mockStrategy.address);
-    console.log({ strategyCrvBalance: crvBalance.toNumber() });
+    console.log({ strategyCrvBalance: strategyCrvBalance.div(e18).toString() });
 
     // Suboptimal route in data
     const suboptimalSwapDataCrvDai = await uniswapV2DexHandler.callStatic.customSwapData(
@@ -98,55 +78,44 @@ describe('MockStrategy', function() {
       owner.address, // _to
       0// _expire
     );
+
     // Should revert with 'custom-swap-is-suboptimal'
+    console.log({ customSwapDataCrvDai })
+    console.log('getAmountOut(customSwapDataCrvDai):', (await dexHandler.getAmountOut(customSwapDataCrvDai, strategyCrvBalance)).div(e18).toString());
+    console.log({ suboptimalSwapDataCrvDai })
+    console.log('getAmountOut(suboptimalSwapDataCrvDai):', (await dexHandler.getAmountOut(suboptimalSwapDataCrvDai, strategyCrvBalance)).div(e18).toString());
     await expect(mockStrategy.customHarvest(uniswapV2Address, suboptimalSwapDataCrvDai))
-      .to.be.revertedWith('custom-swap-is-suboptimal');
+    .to.be.revertedWith('custom-swap-is-suboptimal');
     
     // Should succeed by sending the same path governance uses 
     await mockStrategy.customHarvest(uniswapV2Address, customSwapDataCrvDai);
     const strategyDaiBalance = await daiContract.callStatic.balanceOf(mockStrategy.address);
 
-    console.log({ strategyDaiBalance: strategyDaiBalance.toNumber() })
-
+    console.log({ strategyDaiBalance: strategyDaiBalance.div(e18).toString() })
 
     // More rewards!
-    // Get WETH and approve
-    await owner.sendTransaction({ to: wethAddress, value: amount })
-    await wethContract.approve(dexHandler.address, amount);
-
-    // Swap WETH to CRV
-    await dexHandler.customSwap(swapDataWethCrv, amount);
-    const crvBalance2 = await crvContract.callStatic.balanceOf(owner.address);
-
     // Send CRV to strategy
-    await crvContract.transfer(mockStrategy.address, crvBalance2)
+    await crvContract.connect(crvWhale).transfer(mockStrategy.address, crvAmount)
+
 
     // Default harvest
     await mockStrategy.harvest();
 
     const strategyDaiBalance2 = await daiContract.callStatic.balanceOf(mockStrategy.address);
 
-    console.log({ strategyDaiBalance2: strategyDaiBalance2.toNumber() })
+    console.log({ strategyDaiBalance2: strategyDaiBalance2.div(e18).toString() })
     
 
     // Even more rewards!
-    // Get WETH and approve
-    await owner.sendTransaction({ to: wethAddress, value: amount })
-    await wethContract.approve(dexHandler.address, amount);
-
-    // Swap WETH to CRV
-    await dexHandler.customSwap(swapDataWethCrv, amount);
-    const crvBalance3 = await crvContract.callStatic.balanceOf(owner.address);
-
     // Send CRV to strategy
-    await crvContract.transfer(mockStrategy.address, crvBalance3)
+    await crvContract.connect(crvWhale).transfer(mockStrategy.address, crvAmount)
 
-    // Default harvest
+    // Old harvest (Directly to uniswapV2)
     await mockStrategy.oldHarvest();
 
     const strategyDaiBalance3 = await daiContract.callStatic.balanceOf(mockStrategy.address);
 
-    console.log({ strategyDaiBalance3: strategyDaiBalance3.toNumber() })
+    console.log({ strategyDaiBalance3: strategyDaiBalance3.div(e18).toString() })
     
   });
 
