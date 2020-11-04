@@ -19,7 +19,13 @@ contract SafeSmartSwap {
     IGovernanceSwap public governanceSwap;
 
     constructor(address _governanceSwap) public {
+        _setGovernanceSwap(_governanceSwap);
+    }
+
+    // Setter
+    function _setGovernanceSwap(address _governanceSwap) internal {
         governanceSwap = IGovernanceSwap(_governanceSwap);
+        require(governanceSwap.isGovernanceSwap(), 'safe-smart-swap::set-governance-swap:is-not-governance-swap');
     }
 
     // Governance swap
