@@ -7,16 +7,18 @@ This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can
 ## Wishlist
 
 ### DexHandlers
-    * [x] [`Uniswap`](./contracts/dex-handlers/UniswapV2DexHandler.sol) (`swapExactTokensForTokens`)
-    * [ ] sushiswap
-    * [ ] 0x
-    * [ ] bancor
-    * [ ] paraswap
-    * [ ] crv
+
+* [x] [`Uniswap`](./contracts/dex-handlers/UniswapV2DexHandler.sol) (`swapExactTokensForTokens`)
+* [ ] sushiswap
+* [ ] 0x
+* [ ] bancor
+* [ ] paraswap
+* [ ] crv
 
 ### Integrations
-    * [ ] yearn strategy
-    * [ ] erc20-dca (TBD)
+
+* [ ] yearn strategy
+* [ ] erc20-dca (TBD)
 
 ## Run tests
 
