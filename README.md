@@ -4,9 +4,9 @@
 These contracts were developed to allow devs to provide a safe, flexible and governable way to handle swaps on their smart contracts.
 This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can submit custom dex+data to reduce slippage (and possibly get a bonus for it)
 
-## TODO / Wishlist
+## Wishlist
 
-* [~] DexHandlers
+### DexHandlers
     * [x] [`Uniswap`](./contracts/dex-handlers/UniswapV2DexHandler.sol) (`swapExactTokensForTokens`)
     * [ ] sushiswap
     * [ ] 0x
@@ -14,7 +14,7 @@ This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can
     * [ ] paraswap
     * [ ] crv
 
-* [ ] Integrations
+### Integrations
     * [ ] yearn strategy
     * [ ] erc20-dca (TBD)
 
