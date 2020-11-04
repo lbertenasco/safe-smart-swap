@@ -27,7 +27,9 @@ contract GovernanceSwap is Governable, CollectableDust, IGovernanceSwap {
     constructor() public Governable(msg.sender) CollectableDust() {
     }
 
-    
+    function isGovernanceSwap() external pure override returns (bool) {
+        return true;
+    }
 
     /*
         Governance Functions:

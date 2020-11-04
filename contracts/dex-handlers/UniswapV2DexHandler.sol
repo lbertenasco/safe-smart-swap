@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./DexHandlerAbstract.sol";
-import "../../interfaces/IUniswapV2Router.sol";
+import "../../interfaces/dex/IUniswapV2Router.sol";
 /*
  * UniswapV2 Handler 
  */
