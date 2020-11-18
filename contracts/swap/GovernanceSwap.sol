@@ -106,5 +106,5 @@ contract GovernanceSwap is Governable, CollectableDust, IGovernanceSwap {
     ) external override onlyGovernor {
         _sendDust(_to, _token, _amount);
     }
-    
+
 }

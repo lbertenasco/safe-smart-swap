@@ -21,10 +21,7 @@ describe('MockStrategy', function() {
   });
 
   it.only('Should deploy on mainnet fork', async function() {
-    await hre.network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [config.accounts.mainnet.crvWhale]
-    });
+    await hre.network.provider.request({ method: "hardhat_impersonateAccount", params: [config.accounts.mainnet.crvWhale] });
     const crvWhale = owner.provider.getUncheckedSigner(config.accounts.mainnet.crvWhale);
 
     const GovernanceSwap = await ethers.getContractFactory('GovernanceSwap');
