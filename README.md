@@ -14,6 +14,7 @@ This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can
 * [ ] bancor
 * [ ] paraswap
 * [ ] crv
+* [ ] 1inch
 
 ### Integrations
 
@@ -55,6 +56,9 @@ function decodeData(bytes memory _data) public virtual pure;
 
 
 ### [`UniswapV2DexHandler.sol`](./contracts/dex-handlers/UniswapV2DexHandler.sol)
+> [uniswap verified on etherscan](https://etherscan.io/address/0x293aC14CB38E2443d9c95C185A25b8EA6f2f18A2#code)
+
+> [sushiswap verified on etherscan](https://etherscan.io/address/0xfB5Ab2909A455934214A7b84C802fbFBcE7c4e9F#code)
 
 UniswapV2 custom DexHandler.
 
@@ -86,6 +90,7 @@ require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memo
 
 
 ### [`GovernanceSwap.sol`](./contracts/swap/GovernanceSwap.sol)
+> [verified on etherscan](https://etherscan.io/address/0x220c33Bb71D3b6A6a6EA2036AbDb1C9449447afc#code)
 
 Governance managed mappings for dex and pairs.
 ```sol

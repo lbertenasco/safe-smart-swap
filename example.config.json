@@ -3,7 +3,8 @@
         "mainnet": {
             "publicKey": "0xfeb4acf3df3cdea7399794d0869ef76a6efaff52",
             "privateKey": "",
-            "crvWhale": "0x0e33be39b13c576ff48e14392fbf96b02f40cd34"
+            "crvWhale": "0x0e33be39b13c576ff48e14392fbf96b02f40cd34",
+            "deployer": ""
         }
     },
     "contracts": {
@@ -11,12 +12,32 @@
             "controller": {
                 "address": "0x9E65Ad11b299CA0Abefc2799dDB6314Ef2d91080"
             },
+            "governanceSwap": {
+                "address": "0x220c33Bb71D3b6A6a6EA2036AbDb1C9449447afc"
+            },
             "uniswapV2Router": {
                 "address": "0x7a250d5630b4cf539739df2c5dacb4c659f2488d"
+            },
+            "uniswapHandler": {
+                "address": "0x293aC14CB38E2443d9c95C185A25b8EA6f2f18A2"
+            },
+            "sushiswapRouter": {
+                "address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
+            },
+            "sushiswapHandler": {
+                "address": "0xfB5Ab2909A455934214A7b84C802fbFBcE7c4e9F"
             }
         }
     },
     "infura": {
+        "_name": "",
+        "apiKey": ""
+    },
+    "etherscan": {
+        "_name": "",
+        "apiKey": ""
+    },
+    "coinmarketcap": {
         "_name": "",
         "apiKey": ""
     },
