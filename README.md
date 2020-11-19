@@ -9,7 +9,7 @@ This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can
 ### DexHandlers
 
 * [x] [`Uniswap`](./contracts/dex-handlers/UniswapV2DexHandler.sol) (`swapExactTokensForTokens`)
-* [ ] sushiswap
+* [x] [`Sushiswap`](./contracts/dex-handlers/UniswapV2DexHandler.sol) (`swapExactTokensForTokens`)
 * [ ] 0x
 * [ ] bancor
 * [ ] paraswap
