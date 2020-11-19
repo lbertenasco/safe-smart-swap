@@ -22,7 +22,7 @@ module.exports = {
       url: `https://eth-mainnet.alchemyapi.io/v2/${config.alchemy.mainnet.apiKey}`,
       accounts: mainnetAccounts,
       gasMultiplier: 1.1,
-      gasPrice: 30000000000, // 30 gwei
+      gasPrice: 55000000000, // 55 gwei
     }
   },
   solidity: {
