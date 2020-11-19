@@ -16,7 +16,7 @@
                 "address": "0x220c33Bb71D3b6A6a6EA2036AbDb1C9449447afc"
             },
             "uniswapV2Router": {
-                "address": "0x7a250d5630b4cf539739df2c5dacb4c659f2488d"
+                "address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
             },
             "uniswapHandler": {
                 "address": "0x293aC14CB38E2443d9c95C185A25b8EA6f2f18A2"
