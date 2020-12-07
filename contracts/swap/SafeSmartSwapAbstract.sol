@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
-import "../../interfaces/IDexHandler.sol";
+import "../../interfaces/dex-handlers/IDexHandler.sol";
 import "../../interfaces/IGovernanceSwap.sol";
 
 /*
@@ -32,6 +32,7 @@ contract SafeSmartSwap {
     function _swap(uint256 _amount, address _in, address _out) internal returns (uint _amountOut) {
 
         address _handler = governanceSwap.getPairDefaultDexHandler(_in, _out);
+        require(_handler != address(0), 'no-default-handler');
         bytes memory _data = governanceSwap.getPairDefaultData(_in, _out);
 
         _approve(_in, _handler, _amount);
@@ -73,6 +74,7 @@ contract SafeSmartSwap {
     }
 
     function _approve(address _in, address _handler, uint256 _amount) internal {
+        IERC20(_in).safeApprove(_handler, 0);
         IERC20(_in).safeApprove(_handler, _amount);
     }
 

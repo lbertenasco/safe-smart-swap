@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.6.8;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import '@openzeppelin/contracts/token/ERC20/SafeERC20.sol';
 
 import "./DexHandlerAbstract.sol";
 import "../../interfaces/dex/IUniswapV2Router.sol";
@@ -12,6 +13,7 @@ import "../../interfaces/dex/IUniswapV2Router.sol";
 
 contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     IUniswapV2Router public uniswapV2Router;
 
@@ -31,9 +33,10 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     function customSwap(bytes memory _data, uint256 _amount) public returns (uint256 _amountOut) {
         (, uint256 _min, address[] memory _path,,) = customDecodeData(_data);
         // Transfer _in tokens to self
-        require(IERC20(_path[0]).transferFrom(msg.sender, address(this), _amount), 'uniswapv2-dex-handler::custom-swap:transfer-from-failed');
+        IERC20(_path[0]).safeTransferFrom(msg.sender, address(this), _amount);
 
-        IERC20(_path[0]).approve(address(uniswapV2Router), _amount);
+        IERC20(_path[0]).safeApprove(address(uniswapV2Router), 0);
+        IERC20(_path[0]).safeApprove(address(uniswapV2Router), _amount);
 
         uint[] memory _amounts = uniswapV2Router.swapExactTokensForTokens(
             _amount,
@@ -63,7 +66,7 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
     }
 
     function swapData() external override pure returns (bytes memory) {
-        require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memory _path, address _to, uint256 _expire) returns (bytes memory)');
+        require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] calldata _path, address _to, uint256 _expire) external pure returns (bytes memory);');
     }
     function customSwapData(
         uint256 _amount,

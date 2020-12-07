@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "../../interfaces/IGovernanceSwap.sol";
-import "../../interfaces/IDexHandler.sol";
+import "../../interfaces/dex-handlers/IDexHandler.sol";
 
 import '../utils/Governable.sol';
 import '../utils/CollectableDust.sol';
@@ -75,16 +75,16 @@ contract GovernanceSwap is Governable, CollectableDust, IGovernanceSwap {
         -     
 
      */
-    function getPairDefaultDex(address _in, address _out) external override returns (address _dex) {
+    function getPairDefaultDex(address _in, address _out) external view override returns (address _dex) {
         return defaultPairDex[_in][_out];
     }
-    function getPairDefaultDexHandler(address _in, address _out) external override returns (address _handler) {
+    function getPairDefaultDexHandler(address _in, address _out) external view override returns (address _handler) {
         return dexHandlers[defaultPairDex[_in][_out]];
     }
-    function getDexHandler(address _dex) external override returns (address _handler) {
+    function getDexHandler(address _dex) external view override returns (address _handler) {
         return dexHandlers[_dex];
     }
-    function getPairDefaultData(address _in, address _out) external override returns (bytes memory _data) {
+    function getPairDefaultData(address _in, address _out) external view override returns (bytes memory _data) {
         return defaultPairData[_in][_out];
     }
 

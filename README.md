@@ -1,5 +1,7 @@
-# Governance Safe Smart Swap
+# CustomSwaps (Governance Safe Smart Swaps)
 > name is not final, all suggestions are welcome
+
+[![docs](https://img.shields.io/badge/docs-%F0%9F%93%84-blue)](https://lbertenasco.gitbook.io/custom-swaps/)
 
 These contracts were developed to allow devs to provide a safe, flexible and governable way to handle swaps on their smart contracts.
 This has synergy with [keep3r.network](http://keep3r.network/) since keep3rs can submit custom dex+data to reduce slippage (and possibly get a bonus for it)
