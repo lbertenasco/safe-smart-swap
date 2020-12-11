@@ -1,5 +1,5 @@
 package_name: custom-swaps
-version: 0.1.7
+version: 0.1.8
 settings:
   deployment_networks:
     - mainnet
