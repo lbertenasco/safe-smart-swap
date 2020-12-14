@@ -58,9 +58,9 @@ function decodeData(bytes memory _data) public virtual pure;
 
 
 ### [`UniswapV2DexHandler.sol`](./contracts/dex-handlers/UniswapV2DexHandler.sol)
-> [uniswap verified on etherscan](https://etherscan.io/address/0x293aC14CB38E2443d9c95C185A25b8EA6f2f18A2#code)
+> [uniswap verified on etherscan](https://etherscan.io/address/0x3dd58b427dbaBa8EF08497F1427087670Da0F59f#code)
 
-> [sushiswap verified on etherscan](https://etherscan.io/address/0xfB5Ab2909A455934214A7b84C802fbFBcE7c4e9F#code)
+> [sushiswap verified on etherscan](https://etherscan.io/address/0x67b5A98e0D828Da1dc9C7d679bB618D5010bbeE2#code)
 
 UniswapV2 custom DexHandler.
 
@@ -92,7 +92,7 @@ require(false, 'use customSwapData(uint256 _amount, uint256 _min, address[] memo
 
 
 ### [`GovernanceSwap.sol`](./contracts/swap/GovernanceSwap.sol)
-> [verified on etherscan](https://etherscan.io/address/0x220c33Bb71D3b6A6a6EA2036AbDb1C9449447afc#code)
+> [verified on etherscan](https://etherscan.io/address/0xCe65aab4CE2ec7C13c82437Bd57baFEB0a0791d4#code)
 
 Governance managed mappings for dex and pairs.
 ```sol

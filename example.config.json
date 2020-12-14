@@ -13,19 +13,19 @@
                 "address": "0x9E65Ad11b299CA0Abefc2799dDB6314Ef2d91080"
             },
             "governanceSwap": {
-                "address": "0x220c33Bb71D3b6A6a6EA2036AbDb1C9449447afc"
+                "address": "0xCe65aab4CE2ec7C13c82437Bd57baFEB0a0791d4"
             },
             "uniswapV2Router": {
                 "address": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
             },
             "uniswapHandler": {
-                "address": "0x293aC14CB38E2443d9c95C185A25b8EA6f2f18A2"
+                "address": "0x3dd58b427dbaBa8EF08497F1427087670Da0F59f"
             },
             "sushiswapRouter": {
                 "address": "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
             },
             "sushiswapHandler": {
-                "address": "0xfB5Ab2909A455934214A7b84C802fbFBcE7c4e9F"
+                "address": "0x67b5A98e0D828Da1dc9C7d679bB618D5010bbeE2"
             }
         }
     },
