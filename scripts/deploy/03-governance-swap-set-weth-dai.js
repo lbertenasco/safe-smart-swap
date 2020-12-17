@@ -41,11 +41,11 @@ function promptAndSubmit() {
             0// _expire
           );
           await governanceSwap.setPairDefaults(tokenIn, tokenOut, uniswapV2Address, defaultSwapData);
-          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(tokenIn, tokenOut);
+          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(tokenIn, tokenOut, true);
           console.log('dex is the same', config.contracts.mainnet.uniswapV2Router.address == pairDefaultDex)
-          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(tokenIn, tokenOut);
+          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(tokenIn, tokenOut, true);
           console.log('handler is the same', config.contracts.mainnet.uniswapHandler.address == pairDefaultDexHandler)
-          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(tokenIn, tokenOut);
+          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(tokenIn, tokenOut, true);
           const customDecodeData = await uniswapDexHandler.callStatic.customDecodeData(pairDefaultData);
           console.log('path is the same', JSON.stringify(path) == JSON.stringify(customDecodeData._path));
 

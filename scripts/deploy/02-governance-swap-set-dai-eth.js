@@ -17,11 +17,14 @@ function promptAndSubmit() {
     try {
       const [owner] = await ethers.getSigners();
       console.log('owner:', owner.address);
+      const deployer = owner;
+      // await hre.network.provider.request({ method: "hardhat_impersonateAccount", params: [config.accounts.mainnet.deployer] });
+      // const deployer = owner.provider.getUncheckedSigner(config.accounts.mainnet.deployer);
       prompt.ask(async (answer) => {
         if (answer) {
 
-          const governanceSwap = await ethers.getContractAt('GovernanceSwap', config.contracts.mainnet.governanceSwap.address);
-          const uniswapDexHandler = await ethers.getContractAt('UniswapV2DexHandler', config.contracts.mainnet.uniswapHandler.address);
+          const governanceSwap = await ethers.getContractAt('GovernanceSwap', config.contracts.mainnet.governanceSwap.address, deployer);
+          const uniswapDexHandler = await ethers.getContractAt('UniswapV2DexHandler', config.contracts.mainnet.uniswapHandler.address, deployer);
           const uniswapV2Address = config.contracts.mainnet.uniswapV2Router.address;
 
           const daiAddress = config.contracts.mainnet.dai.address;
@@ -35,11 +38,11 @@ function promptAndSubmit() {
             0// _expire
           );
           await governanceSwap.setPairDefaults(daiAddress, wethAddress, uniswapV2Address, defaultSwapData);
-          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(daiAddress, wethAddress);
+          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(daiAddress, wethAddress, true);
           console.log('dex is the same', config.contracts.mainnet.uniswapV2Router.address == pairDefaultDex)
-          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(daiAddress, wethAddress);
+          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(daiAddress, wethAddress, true);
           console.log('handler is the same', config.contracts.mainnet.uniswapHandler.address == pairDefaultDexHandler)
-          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(daiAddress, wethAddress);
+          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(daiAddress, wethAddress, true);
           const customDecodeData = await uniswapDexHandler.callStatic.customDecodeData(pairDefaultData);
           console.log('path is the same', JSON.stringify(path) == JSON.stringify(customDecodeData._path));
 
