@@ -34,6 +34,17 @@ contract SafeSmartSwap {
         governanceSwapStrict = _strict;
     }
 
+    function _getAmountOut(uint256 _amount, address _in, address _out) internal view returns (uint _amountOut) {
+        address _defaultHandler = governanceSwap.getPairDefaultDexHandler(_in, _out, governanceSwapStrict);
+        bytes memory _defaultData = governanceSwap.getPairDefaultData(_in, _out, governanceSwapStrict);
+        return IDexHandler(_defaultHandler).getAmountOut(_defaultData, _amount);
+    }
+
+    function _getAmountOut(uint256 _amount, address _dex, bytes memory _data) internal view returns (uint _amountOut) {
+        address _handler = governanceSwap.getDexHandler(_dex, governanceSwapStrict);
+        return IDexHandler(_handler).getAmountOut(_data, _amount);
+    }
+
     // Governance swap
     function _swap(uint256 _amount, address _in, address _out) internal returns (uint _amountOut) {
 
