@@ -35,8 +35,8 @@ contract UniswapV2DexHandler is DexHandler { // TODO Add dust collection
         // Transfer _in tokens to self
         IERC20(_path[0]).safeTransferFrom(msg.sender, address(this), _amount);
 
-        IERC20(_path[0]).safeApprove(address(uniswapV2Router), 0);
-        IERC20(_path[0]).safeApprove(address(uniswapV2Router), _amount);
+        // IERC20(_path[0]).approve(address(uniswapV2Router), 0); // Not needed if allowance always goes back to 0
+        IERC20(_path[0]).approve(address(uniswapV2Router), _amount);
 
         uint[] memory _amounts = uniswapV2Router.swapExactTokensForTokens(
             _amount,

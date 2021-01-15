@@ -34,31 +34,30 @@ contract SafeSmartSwap {
         governanceSwapStrict = _strict;
     }
 
-    function _getAmountOut(uint256 _amount, address _in, address _out) internal view returns (uint _amountOut) {
+    function _getAmountOut(uint256 _amount, address _in, address _out) internal view returns (uint256 _amountOut) {
         address _defaultHandler = governanceSwap.getPairDefaultDexHandler(_in, _out, governanceSwapStrict);
         bytes memory _defaultData = governanceSwap.getPairDefaultData(_in, _out, governanceSwapStrict);
         return IDexHandler(_defaultHandler).getAmountOut(_defaultData, _amount);
     }
 
-    function _getAmountOut(uint256 _amount, address _dex, bytes memory _data) internal view returns (uint _amountOut) {
+    function _getAmountOut(uint256 _amount, address _dex, bytes memory _data) internal view returns (uint256 _amountOut) {
         address _handler = governanceSwap.getDexHandler(_dex, governanceSwapStrict);
         return IDexHandler(_handler).getAmountOut(_data, _amount);
     }
 
     // Governance swap
-    function _swap(uint256 _amount, address _in, address _out) internal returns (uint _amountOut) {
+    function _swap(uint256 _amount, address _in, address _out) internal returns (uint256 _amountOut) {
 
         address _handler = governanceSwap.getPairDefaultDexHandler(_in, _out, governanceSwapStrict);
         require(_handler != address(0), 'no-default-handler');
         bytes memory _data = governanceSwap.getPairDefaultData(_in, _out, governanceSwapStrict);
 
-        _approve(_in, _handler, _amount);
-        return IDexHandler(_handler).swap(_data, _amount);
-
+        IERC20(_in).approve(_handler, _amount);
+        _amountOut = IDexHandler(_handler).swap(_data, _amount);
     }
 
     // Custom swap
-    function _swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint _amountOut) {
+    function _swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint256 _amountOut, uint256 _defaultOut) {
         // Use default swap if no custom dex and data was used
         if (_dex == address(0) && _data.length == 0) {
             return _swap(_amount, _in, _out);
@@ -70,29 +69,23 @@ contract SafeSmartSwap {
         // Get governanceSwap amount for token pair
         address _defaultHandler = governanceSwap.getPairDefaultDexHandler(_in, _out, governanceSwapStrict);
         bytes memory _defaultData = governanceSwap.getPairDefaultData(_in, _out, governanceSwapStrict);
-        uint256 _governanceAmountOut = IDexHandler(_defaultHandler).getAmountOut(_defaultData, _amount);
+        _defaultOut = IDexHandler(_defaultHandler).getAmountOut(_defaultData, _amount);
 
         address _handler = governanceSwap.getDexHandler(_dex, governanceSwapStrict);
         require(_handler != address(0), 'no-handler-for-dex');
         
-        _approve(_in, _handler, _amount);
-
+        IERC20(_in).approve(_handler, _amount);
         _amountOut = IDexHandler(_handler).swap(_data, _amount);
 
-        require(_amountOut >= _governanceAmountOut, 'custom-swap-is-suboptimal');
-        // TODO Check gas spendage if _amountOut == _governanceAmountOut to avoid gas mining? (overkill) [need this check for keep3r ]
+        require(_amountOut >= _defaultOut, 'custom-swap-is-suboptimal');
+        // TODO Check gas spendage if _amountOut == _defaultOut to avoid gas mining? (overkill) [need this check for keep3r ]
 
         uint256 inBalancePostSwap = IERC20(_in).balanceOf(address(this));
         uint256 outBalancePostSwap = IERC20(_out).balanceOf(address(this));
 
         // Extra checks to avoid custom dex+data exploits
         require(inBalancePostSwap >= inBalancePreSwap.sub(_amount), 'in-balance-mismatch');
-        require(outBalancePostSwap >= outBalancePreSwap.add(_governanceAmountOut), 'out-balance-mismatch');
-    }
-
-    function _approve(address _in, address _handler, uint256 _amount) internal {
-        IERC20(_in).safeApprove(_handler, 0);
-        IERC20(_in).safeApprove(_handler, _amount);
+        require(outBalancePostSwap >= outBalancePreSwap.add(_defaultOut), 'out-balance-mismatch');
     }
 
 }

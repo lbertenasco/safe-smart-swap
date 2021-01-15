@@ -10,10 +10,10 @@ async function main() {
   await hre.run('compile');
   const DefaultHandler = await ethers.getContractFactory('DefaultHandler');
 
-  await promptAndSubmit(DefaultHandler, UniswapV2DexHandler);
+  await promptAndSubmit(DefaultHandler);
 }
 
-function promptAndSubmit(DefaultHandler, UniswapV2DexHandler) {
+function promptAndSubmit(DefaultHandler) {
   return new Promise((resolve) => {
     try {
       prompt.ask(async (answer) => {

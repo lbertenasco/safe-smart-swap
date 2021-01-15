@@ -45,8 +45,8 @@ contract DefaultHandler is DexHandler, IDefaultHandler { // TODO Add dust collec
         // Transfer _in tokens to self
         IERC20(_in).safeTransferFrom(msg.sender, address(this), _amount);
 
-        IERC20(_in).safeApprove(address(uniswapV2Router), 0);
-        IERC20(_in).safeApprove(address(uniswapV2Router), _amount);
+        // IERC20(_in).approve(address(uniswapV2Router), 0); // Not needed if allowance always goes back to 0
+        IERC20(_in).approve(address(uniswapV2Router), _amount);
         
 
         uint[] memory _amounts = uniswapV2Router.swapExactTokensForTokens(
