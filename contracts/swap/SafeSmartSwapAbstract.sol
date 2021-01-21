@@ -59,9 +59,7 @@ contract SafeSmartSwap {
     // Custom swap
     function _swap(uint256 _amount, address _in, address _out, address _dex, bytes memory _data) internal returns (uint256 _amountOut, uint256 _defaultOut) {
         // Use default swap if no custom dex and data was used
-        if (_dex == address(0) && _data.length == 0) {
-            return _swap(_amount, _in, _out);
-        }
+        require(_dex != address(0), 'no-dex');
 
         uint256 inBalancePreSwap = IERC20(_in).balanceOf(address(this));
         uint256 outBalancePreSwap = IERC20(_out).balanceOf(address(this));
