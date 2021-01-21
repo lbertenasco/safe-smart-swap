@@ -56,7 +56,7 @@ describe('MockStrategy', function() {
     );
     await governanceSwap.setPairDefaults(crvAddress, daiAddress, uniswapV2Address, customSwapDataCrvDai);
     
-    const handlerAddress = await governanceSwap.callStatic.getPairDefaultDexHandler(crvAddress, daiAddress);
+    const handlerAddress = await governanceSwap.callStatic.getPairDefaultDexHandler(crvAddress, daiAddress, true);
     const dexHandler = await ethers.getContractAt('UniswapV2DexHandler', handlerAddress, owner);
     
     // Send CRV to strategy

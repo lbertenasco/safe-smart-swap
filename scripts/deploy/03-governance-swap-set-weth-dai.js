@@ -4,7 +4,7 @@ const ethers = hre.ethers;
 const config = require('../../.config.json');
 const { e18 } = require('../../utils/web3-utils');
 
-const prompt = new Confirm('Do you wish to add default dai/weth governance handler and data?');
+const prompt = new Confirm('Do you wish to add default weth/dai governance handler and data?');
 
 async function main() {
   await hre.run('compile');
@@ -29,7 +29,10 @@ function promptAndSubmit() {
 
           const daiAddress = config.contracts.mainnet.dai.address;
           const wethAddress = config.contracts.mainnet.weth.address;
-          const path = [daiAddress, wethAddress];
+          const tokenIn = wethAddress;
+          const tokenOut = daiAddress;
+
+          const path = [tokenIn, tokenOut];
           const defaultSwapData = await uniswapDexHandler.callStatic.customSwapData(
             0, // _amount
             0, // _min
@@ -37,12 +40,12 @@ function promptAndSubmit() {
             owner.address, // _to
             0// _expire
           );
-          await governanceSwap.setPairDefaults(daiAddress, wethAddress, uniswapV2Address, defaultSwapData);
-          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(daiAddress, wethAddress, true);
+          await governanceSwap.setPairDefaults(tokenIn, tokenOut, uniswapV2Address, defaultSwapData);
+          const pairDefaultDex = await governanceSwap.callStatic.getPairDefaultDex(tokenIn, tokenOut, true);
           console.log('dex is the same', config.contracts.mainnet.uniswapV2Router.address == pairDefaultDex)
-          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(daiAddress, wethAddress, true);
+          const pairDefaultDexHandler = await governanceSwap.callStatic.getPairDefaultDexHandler(tokenIn, tokenOut, true);
           console.log('handler is the same', config.contracts.mainnet.uniswapHandler.address == pairDefaultDexHandler)
-          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(daiAddress, wethAddress, true);
+          const pairDefaultData = await governanceSwap.callStatic.getPairDefaultData(tokenIn, tokenOut, true);
           const customDecodeData = await uniswapDexHandler.callStatic.customDecodeData(pairDefaultData);
           console.log('path is the same', JSON.stringify(path) == JSON.stringify(customDecodeData._path));
 
